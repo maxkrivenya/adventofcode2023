@@ -1,0 +1,58 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+int main() {
+    ifstream fptr{"data.txt"};
+    if(!fptr){
+        cout << "file open error";
+        exit(1);
+    }
+    string x;
+    int total = 0;
+    float init_value = 0.5;
+    int j = 0;
+    do{
+        vector<int> win;
+        vector<int> yours;
+        j = 0;
+        init_value = 0.5;                   // 2^(N-1) = 0.5 * 2^N     where there's N matching numbers
+        getline(fptr, x);
+        for(; x[j] != ':'; j++);            //skip CARD N:
+
+        while(true){                        //add win numbers to one vector
+            int temp = 0;
+            for(; !isdigit(x[j]); j++);
+            for(; isdigit(x[j]); j++){
+                temp += x[j] - '0';
+                temp *= 10;
+            }
+            win.push_back(temp);
+            j++;
+            if(x[j] == '|'){break;}
+        }
+        while(j < x.length()){             //add your numbers to another vector
+            int temp = 0;
+            for(; !isdigit(x[j]) && j < x.length(); j++);
+            for(; isdigit(x[j]) && j < x.length(); j++){
+                temp += x[j] - '0';
+                temp *= 10;
+            }
+            yours.push_back(temp);
+            j++;
+        }
+
+        for(vector<int>::iterator it = win.begin(); it != win.end(); it++){                        //see how many numbers match
+            for(vector<int>::iterator that = yours.begin(); that != yours.end(); that++){
+                if((*it) == (*that)){
+                    init_value *= 2;
+                }
+            }
+        }
+        total += init_value;
+    }while(!fptr.eof());
+
+    cout << endl << "The result is " << total << '.';
+    return 0;
+}
