@@ -1,0 +1,77 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#define r_amt 12
+#define g_amt 13
+#define b_amt 14
+using namespace std;
+int main() {
+    ifstream fptr{"data.txt"};
+    if(!fptr){
+        cout << "file open error";
+        exit(1);
+    }
+
+    string x;         
+    int total = 0;    //answer
+    int temp = 0;     //cubes pulled
+    int r = 0;        //max pulled red    during game
+    int g = 0;        //max pulled green  during game
+    int b = 0;        //max pulled blue   during game
+    int j = 0;        //string iterator 
+    int i = 0;        //game ID
+    do{
+        i++;
+        r = 0;
+        g = 0;
+        b = 0;
+        j = 0;
+        getline(fptr, x);
+
+        for(; j < x.length() && x[j] != ':'; j++);  //skip the "GAME N:" part
+
+        while(j < x.length()){  
+            temp = 0;                             
+            while(!isdigit(x[j])){j++;}            //skip to first digit
+
+            while(isdigit(x[j])){                  //read number
+                temp *= 10;
+                temp += x[j] - '0';
+                j++;
+            }
+            j++;
+            if(j >= x.length()){break;} 
+            switch(x[j]){                        //get colour by 1st letter (r/g/b), if most amt of cubes pulled, save
+                case 'r': {
+                    if(temp > r) {
+                        r = temp;
+                    }
+                    break;
+                }
+                case 'g': {
+                    if(temp > g) {
+                        g = temp;
+                    }
+                    break;
+                }
+                case 'b': {
+                    if(temp > b) {
+                        b = temp;
+                    }
+                    break;
+                }
+                default:{
+                    cout << temp << " " << x[j];
+                    exit(1); break;
+                }
+            }
+        }
+        if(r <= r_amt && g <= g_amt && b <= b_amt){        //after the game is over, check if the rules were broken
+            total += i;
+            cout << i << endl;
+        }
+    }while(!fptr.eof());
+
+    cout << endl << "The result is " << total << '.';
+    return 0;
+}
