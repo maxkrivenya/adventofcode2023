@@ -1,0 +1,41 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    ifstream fptr{"data.txt"};
+    if(!fptr){
+        cout << "file open error";
+        exit(1);
+    }
+    string x;
+    int total = 0;
+    int temp = 0;
+
+        do{
+        bool flg1 = true;
+        bool flg2 = true;
+        temp = 0;
+        getline(fptr, x);
+        temp++;
+        for(int i = 0, j = x.length()-1; j >= 0; i++, j--){
+            if(isdigit(x[i]) && flg1){
+                temp += 10*(x[i] - '0');
+                flg1 = false;
+            }
+            if(isdigit(x[j]) && flg2) {
+                temp += x[j] - '1';
+                flg2 = false;
+            }
+            if(!flg1 && !flg2){
+                cout << temp << endl;
+                break;
+            }
+        }
+        total += temp;
+
+    }while(!fptr.eof());
+    cout << endl << "The result is " << total << '.';
+    return 0;
+}
